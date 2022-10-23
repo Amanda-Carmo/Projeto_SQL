@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import Union
 from enum import Enum
+from uuid import uuid4
+from uuid import UUID 
 
 class Genre(str, Enum):
     action = "action"
@@ -12,6 +14,7 @@ class Genre(str, Enum):
 
 
 class Book(BaseModel):
+    id: UUID = uuid4()
     name: str
     genre: Genre
     author_name: str
