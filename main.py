@@ -3,7 +3,7 @@ from models import Book, Genre
 
 from typing import List, Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 
@@ -40,3 +40,11 @@ async def fetch_books():
 async def register_book(book: Book):
     db.append(book)
     return {"id": book.id}
+
+@app.delete("/api/v1/books/{books_id}")
+async def delete_book(book_id: UUID):
+    for book in db:
+        if book.id == book_id:
+            db.remove(book)
+            return
+    raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
