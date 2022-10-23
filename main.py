@@ -1,5 +1,5 @@
 from uuid import UUID
-from models import Book, BookUpdateRequest
+from models import Book, BookRequest
 from db import db
 
 from typing import List
@@ -14,23 +14,27 @@ def read_root():
 
 @app.get("/api/v1/books")
 async def fetch_books():
-    return db
+    return {"Books": db}
+
+@app.get("/api/v1/books/{book_id}")
+async def get_book(book_id: int):
+    return db[book_id - 1]
 
 @app.post("/api/v1/books")
 async def register_book(book: Book):
     db.append(book)
-    return {"id": book.id}
+    return {"task": "register successful", "name":book.name}
 
 @app.delete("/api/v1/books/{books_id}")
 async def delete_book(book_id: UUID):
     for book in db:
         if book.id == book_id:
             db.remove(book)
-            return
+            return {"task": "delete successful", "book": book.name}
     raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
 
 @app.put("/api/v1/books/{book_id}")
-async def update_book(book_id: UUID, book_update: BookUpdateRequest):
+async def update_book(book_id: UUID, book_update: BookRequest):
     for book in db:
         if book.id == book_id:
             if book_update.name:
@@ -39,5 +43,5 @@ async def update_book(book_id: UUID, book_update: BookUpdateRequest):
                 book.genre = book_update.genre
             if book_update.author_name:
                 book.author_name = book_update.author_name
-            return
+            return book
     raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
