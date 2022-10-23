@@ -1,25 +1,34 @@
-from typing import Union
+from uuid import UUID
+from models import Book, Genre
+
+from typing import List, Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from enum import Enum
-
-class ModelName(str, Enum):
-    alexnet = "alexnet"
-    resnet = "resnet"
-    lenet = "lenet"
-
-
 app = FastAPI()
 
+# Banco de dados criados, por hora, em uma estrutura em python simples
+db: List[Book] = [
+    Book(
+        id = UUID, 
+        name = "Harry Potter and the Philosopher's Stone", 
+        genre = Genre.fantasy, 
+        author_name = "J. K. Rowling"),
+        
+    Book(
+        id = UUID, 
+        name = "The Book Thief", 
+        genre = Genre.drama, 
+        author_name = "Markus Zusak"),
 
-@app.get("/models/{model_name}")
-async def get_model(model_name: ModelName):
-    if model_name is ModelName.alexnet:
-        return {"model_name": model_name, "message": "Deep Learning FTW!"}
+    Book(
+        id = UUID, 
+        name = "Sherlock Holmnes: A Study in Scarlet", 
+        genre = Genre.mystery, 
+        author_name = "Arthur Conan Doyle"),
+]
 
-    if model_name.value == "lenet":
-        return {"model_name": model_name, "message": "LeCNN all the images"}
-
-    return {"model_name": model_name, "message": "Have some residuals"}
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}

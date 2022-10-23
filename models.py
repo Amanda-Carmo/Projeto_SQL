@@ -1,5 +1,6 @@
+from uuid import uuid4
 from pydantic import BaseModel
-from typing import UUID
+from typing import UUID, uuid4
 from enum import Enum
 
 class Genre(str, Enum):
@@ -7,14 +8,12 @@ class Genre(str, Enum):
     adventure = "adventure"
     fantasy = "fantasy"
     mystery = "mystery"
-    romance = "romance"
     sci_fi = "Sci-Fi"
+    drama = "drama"
 
 
 class Book(BaseModel):
-    id: int
+    id: UUID # = uuid4
     name: str
     genre: Genre
     author_name: str
-
-    
