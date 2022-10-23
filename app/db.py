@@ -1,4 +1,4 @@
-from models import Book, Genre
+from app.models import Book, Genre
 from uuid import UUID
 from typing import List
 
