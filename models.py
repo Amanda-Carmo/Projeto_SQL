@@ -18,3 +18,8 @@ class Book(BaseModel):
     name: str
     genre: Genre
     author_name: str
+
+class BookUpdateRequest(BaseModel):
+    name: str
+    genre: Genre
+    author_name: str
