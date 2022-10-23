@@ -48,3 +48,13 @@ async def delete_book(book_id: UUID):
             db.remove(book)
             return
     raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
+
+@app.put("/api/v1/books/{book_id}")
+async def update_book(book_id: UUID, book: Book):
+    for book in db:
+        if book.id == book_id:
+            book.name = book.name
+            book.genre = book.genre
+            book.author_name = book.author_name
+            return
+    raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
