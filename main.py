@@ -1,5 +1,5 @@
 from uuid import UUID
-from models import Book, Genre
+from models import Book, BookUpdateRequest
 from db import db
 
 from typing import List
@@ -26,5 +26,18 @@ async def delete_book(book_id: UUID):
     for book in db:
         if book.id == book_id:
             db.remove(book)
+            return
+    raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
+
+@app.put("/api/v1/books/{book_id}")
+async def update_book(book_id: UUID, book_update: BookUpdateRequest):
+    for book in db:
+        if book.id == book_id:
+            if book_update.name:
+                book.name = book_update.name
+            if book_update.genre:
+                book.genre = book_update.genre
+            if book_update.author_name:
+                book.author_name = book_update.author_name
             return
     raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
