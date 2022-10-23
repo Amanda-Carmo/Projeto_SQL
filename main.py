@@ -1,6 +1,6 @@
 from uuid import UUID
 from models import Book, BookRequest
-from app.db import db
+import db
 
 from typing import List
 
