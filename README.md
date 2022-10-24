@@ -8,9 +8,15 @@ Projeto desenvolvido para a matéria Megadados do 6º semestre de Engenharia da 
 Para o funcionamento do projeto:
 
 - Abra um terminal
+Clone o repositório no local desejado;
+
+`cd Projeto_SQL`
+
 - Copie o comando abaixo para baixar as dependências do projeto
-## pip install fastapi "uvicorn[standard]"
+## `pip install -r ./requirements.txt`
+
 - Copie o comando abaixo para criar uma conexão com o servidor
-## uvicorn main:app --reload
+## `uvicorn main:app --reload`
+
 - Abra o link abaixo em um navegador web de sua escolha
 ## http://127.0.0.1:8000/docs#/
