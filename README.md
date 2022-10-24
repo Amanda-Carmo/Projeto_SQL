@@ -7,8 +7,7 @@ Projeto desenvolvido para a matéria Megadados do 6º semestre de Engenharia da 
 
 Para o funcionamento do projeto:
 
-- Abra um terminal
-Clone o repositório no local desejado;
+- Abra um terminal e clone o repositório no local desejado;
 
 `cd Projeto_SQL`
 
