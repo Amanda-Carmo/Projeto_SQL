@@ -43,7 +43,8 @@ async def delete_book(book_id: UUID):
 @app.put("/api/v1/books/{book_id}")
 async def update_book(book_id: UUID, book_update: BookRequest):
     for book in db:
-        if book.id == book_id:
+        if book.id == book_id: # checa se o id está correto
+            # Conferindo qual dado foi alterado
             if book_update.name:
                 book.name = book_update.name
             if book_update.genre:

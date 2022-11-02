@@ -4,6 +4,7 @@ from enum import Enum
 import uuid
 from sqlmodel import Field
 
+# Gênero dos livros
 class Genre(str, Enum):
     action = "action"
     adventure = "adventure"
@@ -12,7 +13,7 @@ class Genre(str, Enum):
     sci_fi = "Sci-Fi"
     drama = "drama"
 
-
+# Livros
 class Book(BaseModel):
     id: uuid.UUID = Field(
         default_factory=uuid.uuid4,
@@ -25,7 +26,7 @@ class Book(BaseModel):
     author_name: str
     price: float
 
-
+# Para o update request: atributos que se pode atualizar. Não se pode mudar id.
 class BookRequest(BaseModel):
     name: str
     genre: Genre
