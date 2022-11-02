@@ -2,8 +2,6 @@ from pydantic import BaseModel
 from typing import Union
 from enum import Enum
 import uuid
-# from uuid import uuid4, UUID
-# from sqlalchemy import Field
 from sqlmodel import Field
 
 class Genre(str, Enum):

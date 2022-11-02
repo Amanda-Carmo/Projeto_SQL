@@ -12,7 +12,7 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-# Realizando GET
+# GET
 @app.get("/api/v1/books")
 async def fetch_books():
     return {"Books": db}
@@ -27,17 +27,19 @@ async def register_book(book: Book = Body(
             "author_name": "C. S. Lewis",
             "price": 35.4},
     ),):
-    db.append(book)                                                         # RETURM : mostra que o registro funcionou
+    db.append(book)                                                         # RETURN : mostra que o registro funcionou
     return {"task": "register successful", "name":book.name, "id": book.id} # e mostra nome e id do livro
 
+# Deletando um livro
 @app.delete("/api/v1/books/{books_id}")
 async def delete_book(book_id: UUID):
     for book in db:
         if book.id == book_id:
             db.remove(book)
-            return {"task": "delete successful", "book": book.name}
+            return {"task": "delete successful", "book": book.name} # Mostra avisa que o delete teve sucesso
     raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
 
+# Atualização de dados de um livro
 @app.put("/api/v1/books/{book_id}")
 async def update_book(book_id: UUID, book_update: BookRequest):
     for book in db:
