@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from typing import Union
 from enum import Enum
-from uuid import uuid4
-from uuid import UUID 
+import uuid
+# from uuid import uuid4, UUID
+# from sqlalchemy import Field
+from sqlmodel import Field
 
 class Genre(str, Enum):
     action = "action"
@@ -14,7 +16,12 @@ class Genre(str, Enum):
 
 
 class Book(BaseModel):
-    id: UUID = uuid4()
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        primary_key=True,
+        index=True,
+        nullable=False,
+    )
     name: str
     genre: Genre
     author_name: str

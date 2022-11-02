@@ -1,4 +1,4 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 from models import Book, BookRequest
 from db import db
 
@@ -12,10 +12,13 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
+# Realizando GET
 @app.get("/api/v1/books")
 async def fetch_books():
     return {"Books": db}
 
+# Post com exemplo de inserção -- 
+# De modo a deixar claro que não é necessário colocar ID, já que é colocado automaticamente
 @app.post("/api/v1/books")
 async def register_book(book: Book = Body(
         example={
@@ -24,8 +27,8 @@ async def register_book(book: Book = Body(
             "author_name": "C. S. Lewis",
             "price": 35.4},
     ),):
-    db.append(book)
-    return {"task": "register successful", "name":book.name}
+    db.append(book)                                                         # RETURM : mostra que o registro funcionou
+    return {"task": "register successful", "name":book.name, "id": book.id} # e mostra nome e id do livro
 
 @app.delete("/api/v1/books/{books_id}")
 async def delete_book(book_id: UUID):
