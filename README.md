@@ -1,7 +1,6 @@
 # Projeto_SQL
 
-Amanda Carmo
-Arthur Carvalho
+Amanda Carmo  |  Arthur Carvalho
 
 Projeto desenvolvido para a matéria Megadados do 6º semestre de Engenharia da Computação do Insper
 
