@@ -1,12 +1,17 @@
-from uuid import UUID, uuid4
+from uuid import UUID
 from models import Book, BookRequest
 from db import db
-
 from typing import List
-
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Body, Depends
+from fastapi.security import OAuth2PasswordBearer
 
 app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@app.get("/api/v1/books")
+async def read_items(token: str = Depends(oauth2_scheme)):
+    return {"token": token}
 
 @app.get("/")
 def read_root():
@@ -51,5 +56,9 @@ async def update_book(book_id: UUID, book_update: BookRequest):
                 book.genre = book_update.genre
             if book_update.author_name:
                 book.author_name = book_update.author_name
+            if book_update.price:
+                book.price = book_update.price
+            if book_update.amount:
+                book.amount = book_update.amount
             return book
     raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")

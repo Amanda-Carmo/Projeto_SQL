@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from typing import Union
 from enum import Enum
 import uuid
 from sqlmodel import Field
+import datetime
 
 # Gênero dos livros
 class Genre(str, Enum):
@@ -17,7 +17,6 @@ class Genre(str, Enum):
 class Book(BaseModel):
     id: uuid.UUID = Field(
         default_factory=uuid.uuid4,
-        primary_key=True,
         index=True,
         nullable=False,
     )
@@ -25,6 +24,7 @@ class Book(BaseModel):
     genre: Genre
     author_name: str
     price: float
+    amount: int
 
 # Para o update request: atributos que se pode atualizar. Não se pode mudar id.
 class BookRequest(BaseModel):
@@ -32,3 +32,27 @@ class BookRequest(BaseModel):
     genre: Genre
     author_name: str
     price: float
+    amount: int
+
+# Controle Venda
+class Order(BaseModel):
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        index=True,
+        nullable=False,
+    )
+    book_id: Book.id
+    amount: int
+    order_date: datetime.date
+
+
+# Controle Compra
+class Purchase(BaseModel):
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        index=True,
+        nullable=False,
+    )
+    book_id: Book.id
+    amount: int
+    purchase_date: datetime.date

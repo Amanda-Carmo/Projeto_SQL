@@ -9,19 +9,22 @@ db: List[Book] = [
         name = "Harry Potter and the Philosopher's Stone", 
         genre = Genre.fantasy, 
         author_name = "J. K. Rowling",
-        price = 36.91),
+        price = 36.91, 
+        amount = 10),
         
     Book(
         id = UUID("8dc377f9-912f-469e-a4d6-baf0f734d6ce"), 
         name = "The Book Thief", 
         genre = Genre.drama, 
         author_name = "Markus Zusak",
-        price = 12.80),
+        price = 12.80, 
+        amount = 25),
 
     Book(
         id = UUID("7d41c58f-939f-4c2e-be84-724fcfa22b79"), 
         name = "Sherlock Holmnes: A Study in Scarlet", 
         genre = Genre.mystery, 
         author_name = "Arthur Conan Doyle",
-        price = 12.80),
+        price = 12.80, 
+        amount = 17),
 ]
