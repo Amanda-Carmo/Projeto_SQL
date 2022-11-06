@@ -1,58 +1,51 @@
-from pydantic import BaseModel
-from enum import Enum
-import uuid
-from sqlmodel import Field
+import os 
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.schema import Column
+from sqlalchemy import ForeignKey
+from sqlalchemy.types import String, Integer, Float, Date, Numeric
+import models as schemas
+from sqlalchemy import desc
+
+from database import Base
+
 import datetime
 
-# Gênero dos livros
-class Genre(str, Enum):
-    action = "action"
-    adventure = "adventure"
-    fantasy = "fantasy"
-    mystery = "mystery"
-    sci_fi = "Sci-Fi"
-    drama = "drama"
+def _get_date():
+    return datetime.datetime.now()
 
-# Livros
-class Book(BaseModel):
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
-    name: str
-    genre: Genre
-    author_name: str
-    price: float
-    amount: int
+class Genre(Base):
+    __tablename__ = "Genres"
+    name = Column(String, primary_key=True)
 
-# Para o update request: atributos que se pode atualizar. Não se pode mudar id.
-class BookRequest(BaseModel):
-    name: str
-    genre: Genre
-    author_name: str
-    price: float
-    amount: int
+class Book(Base):
+    __tablename__ = "Books"
+    id = Column(String, nullable=False, primary_key=True)
+    name = Column(String)
+    genre = Column(String, ForeignKey("Genre.name"), nullable=False)
+    author_name = Column(String)
+    price = Column(Numeric)
+    amount = Column(Integer)
 
-# Controle Venda
-class Order(BaseModel):
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
-    book_id: Book.id
-    amount: int
-    order_date: datetime.date
+    order = relationship("Order", back_populates="book")
+    purchase = relationship("Purchase", back_populates="book")
 
 
-# Controle Compra
-class Purchase(BaseModel):
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
-    book_id: Book.id
-    amount: int
-    purchase_date: datetime.date
+class Order(Base):
+    __tablename__ = "Order"
+    id = Column(String, primary_key=True)
+    book_id = Column(String, ForeignKey("Book.id"), nullable=False)
+    amount = Column(Integer)
+    order_date = Column(Date, onupdate=_get_date)
+
+    book = relationship("Book", back_populates="order")
+
+class Purchase(Base):
+    __tablename__ = "Purchase"
+    id = Column(String, primary_key=True)
+    book_id = Column(String, ForeignKey("Book.id"), nullable=False)
+    amount = Column(Integer)
+    purchase_date = Column(Date, onupdate=_get_date)
+
+    book = relationship("Book", back_populates="purchase")

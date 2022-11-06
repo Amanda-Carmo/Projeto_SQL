@@ -11,13 +11,13 @@ Para o funcionamento do projeto:
 
 - Abra um terminal e clone o repositório no local desejado, depois:
 
-`cd Projeto_SQL`
+### `cd Projeto_SQL`
 
 - Copie o comando abaixo para baixar as dependências do projeto
-## `pip install -r ./requirements.txt`
+### `pip install -r ./requirements.txt`
 
 - Copie o comando abaixo para criar uma conexão com o servidor
-## `uvicorn main:app --reload`
+### `uvicorn main:app --reload`
 
 - Abra o link abaixo em um navegador web de sua escolha
-## http://127.0.0.1:8000/docs#/
+#### http://127.0.0.1:8000/docs#/
