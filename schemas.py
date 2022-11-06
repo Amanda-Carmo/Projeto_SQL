@@ -35,6 +35,13 @@ class BookRequest(BaseModel):
     price: float
     amount: int
 
+class OrderCreate(BaseModel):
+    user_id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        index=True,
+        nullable=False,
+    )
+
 # Controle Venda
 class Order(BaseModel):
     id: uuid.UUID = Field(
@@ -50,6 +57,13 @@ class Order(BaseModel):
     amount: int
     order_date: datetime.date
 
+
+class PurchaseCreate(BaseModel):
+    user_id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        index=True,
+        nullable=False,
+    )
 
 # Controle Compra
 class Purchase(BaseModel):

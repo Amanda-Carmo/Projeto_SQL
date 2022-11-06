@@ -31,19 +31,24 @@ class Book(Base):
     order = relationship("Order", back_populates="book")
     purchase = relationship("Purchase", back_populates="book")
 
-
+# Venda de livros (saída)
 class Order(Base):
     __tablename__ = "Order"
-    id = Column(String, primary_key=True)
+    user_id = Column(String) #usuário que pediu
+
+    order_id = Column(String, primary_key=True)
     book_id = Column(String, ForeignKey("Book.id"), nullable=False)
     amount = Column(Integer)
     order_date = Column(Date, onupdate=_get_date)
 
     book = relationship("Book", back_populates="order")
 
+# Compra de livros (recolocar no estoque)
 class Purchase(Base):
     __tablename__ = "Purchase"
-    id = Column(String, primary_key=True)
+    user_id = Column(String) #usuário que vendeu
+
+    purchase_id = Column(String, primary_key=True)
     book_id = Column(String, ForeignKey("Book.id"), nullable=False)
     amount = Column(Integer)
     purchase_date = Column(Date, onupdate=_get_date)
