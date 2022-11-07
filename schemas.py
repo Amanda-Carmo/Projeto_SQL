@@ -16,66 +16,45 @@ class Genre(str, Enum):
 
 # Livros
 class Book(BaseModel):
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
-    name: str
+    # id: int
+    book_name: str
     genre: Genre
     author_name: str
     price: float
     amount: int
+
+class BookCreate(BaseModel):
+    book_name: str
+    genre: Genre
+    author_name: str
+    price: float
 
 # Para o update request: atributos que se pode atualizar. Não se pode mudar id.
-class BookRequest(BaseModel):
-    name: str
-    genre: Genre
-    author_name: str
+class BookUpdate(BaseModel):
     price: float
-    amount: int
 
 class OrderCreate(BaseModel):
-    user_id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
+    user_id: int
+    book_name: str
+    amount:int
+    order_date: datetime.date
 
 # Controle Venda
 class Order(BaseModel):
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
-    book_id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
+    id: int
+    user_id: int
+    book_name: str
     amount: int
     order_date: datetime.date
 
 
 class PurchaseCreate(BaseModel):
-    user_id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
+    user_id: int
 
 # Controle Compra
 class Purchase(BaseModel):
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
-    book_id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        index=True,
-        nullable=False,
-    )
+    id: int
+    user_id: int
+    book_name: str
     amount: int
     purchase_date: datetime.date
