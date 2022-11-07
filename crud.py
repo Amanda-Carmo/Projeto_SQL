@@ -22,11 +22,13 @@ def create_book(db: Session, db_book: schemas.BookCreate) -> schemas.BookCreate:
     return db_book
 
 # Deletar um livro
-def delete_book(db: Session, name: str):
-    book = db.query(models.Book).filter(models.Book.book_name == name).first()
+def delete_book(db: Session, book_name: str) -> str:
+    book = db.query(models.Book).filter(models.Book.book_name == book_name).first()
+    # if book is not None:
     db.delete(book)
-    db.commit()
-
+    db.commit()    
+    
+# Atualizar preço
 def update_book(db: Session, book_name: str, book_update: schemas.BookUpdate):
     db.query(models.Book).filter(models.Book.book_name == book_name).update(book_update.dict(), synchronize_session="fetch")
     db.commit()
@@ -50,16 +52,22 @@ def create_order(db: Session, db_order: schemas.OrderCreate) -> schemas.OrderCre
 
 # Criar purchase
 def create_purchase(db: Session, db_purchase: schemas.PurchaseCreate) -> schemas.PurchaseCreate:
-    db_purchase = models.Order(**db_purchase.dict())
-    
-    if models.Book.amount >= models.Order.amount:
-        models.Book.amount = models.Book.amount - models.Order.amount
-    
+    db_purchase = models.Purchase(**db_purchase.dict())
     db.add(db_purchase)
     db.commit()
     db.refresh(db_purchase)
     return db_purchase
 
-# def buy_book():
-
-# def sell_book():
+# Deletar Order
+def delete_order(db: Session, order_id: int) -> int:
+    order = db.query(models.Order).filter(models.Order.order_id == order_id).first()
+    # if book is not None:
+    db.delete(order)
+    db.commit()    
+    
+# Deletar Order
+def delete_purchase(db: Session, purchase_id: int) -> int:
+    purchase = db.query(models.Purchase).filter(models.Purchase.purchase_id == purchase_id).first()
+    # if book is not None:
+    db.delete(purchase)
+    db.commit() 

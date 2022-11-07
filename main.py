@@ -62,17 +62,16 @@ async def register_book(book_created: schemas.BookCreate = Body(
     book = create_book(db, book_created)                                    # RETURN : mostra que o registro funcionou
     return {"task": "register successful", "name":book.book_name} # e mostra nome e id do livro
 
- 
-# Deletando um livro
+ # Delete Book
 @app.delete("/api/v1/books/{book_name}")
-async def delete_book(book_name: str, db: Session = Depends(get_db)):
+async def remove_book(book_name: str, db: Session = Depends(get_db)):
     try:
         delete_book(db, book_name)
-        return {"task": "delete successful"} # Mostra avisa que o delete teve sucesso
-    
+        return {"task": "delete successful"}
     except:
         raise HTTPException(status_code=404, detail=f"book with name: {book_name} does not exists")
 
+    
 
 # Atualização do preço de um livro (pode ter uma promoção, por exemplo...)
 @app.put("/api/v1/books/{book_name}")
@@ -81,14 +80,15 @@ async def update_books(book_name: str, book_updated: schemas.BookUpdate = Body(
             "price": 35.4,},
     ), db: Session = Depends(get_db)):
 
-    try:
-        book = update_book(db, book_name, book_updated)
-        return book
-    except:
-        raise HTTPException(status_code=404, detail=f"book with id: {book_name} does not exists")
+    
+    book = update_book(db, book_name, book_updated)
+    if book is not None:
+        return book_updated
+
+    raise HTTPException(status_code=404, detail=f"book with name: {book_name} does not exists")
 
 
-# ----------------------------------------------------------------- CRUD PARA ORDERS E PURCHASES --------------------------------------------
+# -------------------------------------------------------------------- CRUD PARA ORDERS E PURCHASES --------------------------------------------
 
 # Tabela com informações de todas as saídas de livros para controle
 # GET
@@ -97,13 +97,14 @@ async def get_orders(db:Session = Depends(get_db)):
     orders = get_order(db)
     return orders
 
-# Tabela com informações de todas as entradas de livros para controle
-# GET
-@app.get("/api/v1/purchases")
-async def get_purchases(db:Session = Depends(get_db)):
-    purchases = get_purchase(db)
-    return purchases
+# Deletando uma order
+@app.delete("/api/v1/orders/{order_id}")
+async def remove_order(order_id: int, db: Session = Depends(get_db)):
 
+    delete_order(db, order_id)
+    return {"task": "delete successful"} # Mostra avisa que o delete teve sucesso
+    
+   
 # Cria uma nova venda
 # Post
 @app.post("/api/v1/orders")
@@ -112,15 +113,18 @@ async def register_order(order_created: schemas.OrderCreate = Body(
             "user_id": 3,
             "book_name": "The Book Thief",
             "amount": 15,
-            "order_date": 2022-11-23},
+            "order_date": "2022-11-23"},
     ), db: Session = Depends(get_db)):
 
-    try:
-        order = create_order(db, order_created)                        
-        return order
+    order = create_order(db, order_created)                        
+    return order
 
-    except:
-        raise HTTPException(status_code=404, detail=f"book with name: {order_created.book_name} does not exists")
+# Tabela com informações de todas as entradas de livros para controle
+# GET
+@app.get("/api/v1/purchases")
+async def get_purchases(db:Session = Depends(get_db)):
+    purchases = get_purchase(db)
+    return purchases
 
 # Cria uma nova compra
 # Post
@@ -130,15 +134,20 @@ async def register_purchase(purchase_created: schemas.PurchaseCreate = Body(
             "user_id": 3,
             "book_name": "The Book Thief",
             "amount": 15,
-            "purchase_date": 2022-11-23},
+            "purchase_date": "2022-11-23"},
     ), db: Session = Depends(get_db),):
 
-    try:
         purchase = create_purchase(db, purchase_created)   
         return purchase  
-    except:
-        raise HTTPException(status_code=404, detail=f"book with name: {purchase_created.book_name} does not exists")
 
+# Deletando Purchase
+@app.delete("/api/v1/purchases/{purchase_id}")
+async def remove_purchase(purchase_id: int, db: Session = Depends(get_db)):
+    try:
+        delete_purchase(db, purchase_id)
+        return {"task": "delete successful"} # Mostra avisa que o delete teve sucesso
+    except:
+        raise HTTPException(status_code=404, detail=f"purchase with id: {purchase_id} does not exists")
 
 
 Base.metadata.create_all(bind=engine)
