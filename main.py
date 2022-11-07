@@ -9,7 +9,10 @@ from database import get_db
 from crud import *
 from database import Base, engine
 
+from fastapi.params import Path
+
 from schemas import BookUpdate
+import asyncio
 
 app = FastAPI()
 
@@ -69,16 +72,15 @@ async def delete_book(book_name: str, db: Session = Depends(get_db)):
 
 # Atualização do preço de um livro
 @app.put("/api/v1/books/{book_name}")
-async def update_book(book_name: str, book_updated: schemas.BookUpdate = Body(
+async def update_books(book_name: str = Path(..., example="batata"), book_updated: schemas.BookUpdate = Body(
         example={
             "price": 35.4,
             "amount": 2},
     ), db: Session = Depends(get_db)):
 
     # try:
-    book_update = update_book(db, book_name, book_updated)
-    print(book_update)
-    return {"task": "update successful", "name":book_name} 
+    book = update_book(db, book_name, book_updated)
+    return book
     # except:
     #     raise HTTPException(status_code=404, detail=f"book with id: {book_name} does not exists")
 

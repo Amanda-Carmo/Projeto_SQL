@@ -30,7 +30,7 @@ def delete_book(db: Session, name: str):
 def update_book(db: Session, book_name: str, book_update: schemas.BookUpdate):
     db.query(models.Book).filter(models.Book.book_name == book_name).update(book_update.dict(), synchronize_session="fetch")
     db.commit()
-    return get_books(db, book_name, book_update)
+    return get_book_byname(db, book_name)
 
 # Read de multiplas orders
 def get_order(db: Session) -> list[schemas.Order]:
