@@ -31,7 +31,6 @@ class BookCreate(BaseModel):
 # Para o update request: atributos que se pode atualizar. Não se pode mudar id.
 class BookUpdate(BaseModel):
     price: float
-    amount:int
 
 class OrderCreate(BaseModel):
     user_id: int

@@ -26,18 +26,23 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-# GET
+# ------------------------------------------------------------- CRUD DOS LIVROS -------------------------------------------------------------
+
+# GET toda a tabela, com todos os livros
 @app.get("/api/v1/books")
 async def fetch_books(db:Session = Depends(get_db)):
     books = get_books(db)
     return books
 
-# GET
+# GET pega informação de um livro específico
 @app.get("/api/v1/books/{book_name}")
-async def fetch_books(book_name: str, db:Session = Depends(get_db)):
-    book_name = get_book_byname(db, book_name)
-    return book_name
+async def fetch_book(book_name: str, db:Session = Depends(get_db)):
+    name = get_book_byname(db, book_name)
+    if name is not None:
+        return name
+    raise HTTPException(404, f"Book with name {book_name} does not exists")
 
+# Registrar mais um livro na loja
 # Post com exemplo de inserção -- 
 # De modo a deixar claro que não é necessário colocar ID, já que é colocado automaticamente
 @app.post("/api/v1/books")
@@ -69,36 +74,37 @@ async def delete_book(book_name: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail=f"book with name: {book_name} does not exists")
 
 
-
-# Atualização do preço de um livro
+# Atualização do preço de um livro (pode ter uma promoção, por exemplo...)
 @app.put("/api/v1/books/{book_name}")
-async def update_books(book_name: str = Path(..., example="batata"), book_updated: schemas.BookUpdate = Body(
+async def update_books(book_name: str, book_updated: schemas.BookUpdate = Body(
         example={
-            "price": 35.4,
-            "amount": 2},
+            "price": 35.4,},
     ), db: Session = Depends(get_db)):
 
-    # try:
-    book = update_book(db, book_name, book_updated)
-    return book
-    # except:
-    #     raise HTTPException(status_code=404, detail=f"book with id: {book_name} does not exists")
+    try:
+        book = update_book(db, book_name, book_updated)
+        return book
+    except:
+        raise HTTPException(status_code=404, detail=f"book with id: {book_name} does not exists")
 
 
-# -------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------- CRUD PARA ORDERS E PURCHASES --------------------------------------------
 
+# Tabela com informações de todas as saídas de livros para controle
 # GET
 @app.get("/api/v1/orders")
 async def get_orders(db:Session = Depends(get_db)):
     orders = get_order(db)
     return orders
 
+# Tabela com informações de todas as entradas de livros para controle
 # GET
 @app.get("/api/v1/purchases")
 async def get_purchases(db:Session = Depends(get_db)):
     purchases = get_purchase(db)
     return purchases
 
+# Cria uma nova venda
 # Post
 @app.post("/api/v1/orders")
 async def register_order(order_created: schemas.OrderCreate = Body(
@@ -110,12 +116,13 @@ async def register_order(order_created: schemas.OrderCreate = Body(
     ), db: Session = Depends(get_db)):
 
     try:
-        order = create_order(db, order_created)                        # RETURN : mostra que o registro funcionou
+        order = create_order(db, order_created)                        
         return order
 
     except:
         raise HTTPException(status_code=404, detail=f"book with name: {order_created.book_name} does not exists")
 
+# Cria uma nova compra
 # Post
 @app.post("/api/v1/purchases")
 async def register_purchase(purchase_created: schemas.PurchaseCreate = Body(
@@ -132,6 +139,6 @@ async def register_purchase(purchase_created: schemas.PurchaseCreate = Body(
     except:
         raise HTTPException(status_code=404, detail=f"book with name: {purchase_created.book_name} does not exists")
 
-    # RETURN : mostra que o registro funcionou
+
 
 Base.metadata.create_all(bind=engine)

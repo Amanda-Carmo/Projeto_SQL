@@ -23,7 +23,7 @@ class Book(Base):
     book_name = Column(String(80), primary_key=True, nullable=False)
     genre = Column(String(36), nullable=False)
     author_name = Column(String(50))
-    price = Column(Float)
+    price = Column(Numeric)
     amount = Column(Integer, default=0)
 
     order = relationship("Order", back_populates="book")
