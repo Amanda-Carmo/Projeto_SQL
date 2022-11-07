@@ -16,7 +16,6 @@ class Genre(str, Enum):
 
 # Livros
 class Book(BaseModel):
-    # id: int
     book_name: str
     genre: Genre
     author_name: str
@@ -32,6 +31,7 @@ class BookCreate(BaseModel):
 # Para o update request: atributos que se pode atualizar. Não se pode mudar id.
 class BookUpdate(BaseModel):
     price: float
+    amount:int
 
 class OrderCreate(BaseModel):
     user_id: int
@@ -50,6 +50,9 @@ class Order(BaseModel):
 
 class PurchaseCreate(BaseModel):
     user_id: int
+    book_name: str
+    amount:int
+    purchase_date: datetime.date
 
 # Controle Compra
 class Purchase(BaseModel):

@@ -71,14 +71,16 @@ async def delete_book(book_name: str, db: Session = Depends(get_db)):
 @app.put("/api/v1/books/{book_name}")
 async def update_book(book_name: str, book_updated: schemas.BookUpdate = Body(
         example={
-            "price": 35.4},
+            "price": 35.4,
+            "amount": 2},
     ), db: Session = Depends(get_db)):
 
-    try:
-        book_update = update_book(db, book_name, book_updated)
-        return book_update
-    except:
-        raise HTTPException(status_code=404, detail=f"book with id: {book_name} does not exists")
+    # try:
+    book_update = update_book(db, book_name, book_updated)
+    print(book_update)
+    return {"task": "update successful", "name":book_name} 
+    # except:
+    #     raise HTTPException(status_code=404, detail=f"book with id: {book_name} does not exists")
 
 
 # -------------------------------------------------------------------------------------------------------------
@@ -103,10 +105,14 @@ async def register_order(order_created: schemas.OrderCreate = Body(
             "book_name": "The Book Thief",
             "amount": 15,
             "order_date": 2022-11-23},
-    ), db: Session = Depends(get_db),):
+    ), db: Session = Depends(get_db)):
 
-    order = create_order(db, order_created)                        # RETURN : mostra que o registro funcionou
-    return {"task": "register successful", "order":order.order_id} # e mostra nome e id do livro
+    try:
+        order = create_order(db, order_created)                        # RETURN : mostra que o registro funcionou
+        return order
+
+    except:
+        raise HTTPException(status_code=404, detail=f"book with name: {order_created.book_name} does not exists")
 
 # Post
 @app.post("/api/v1/purchases")
@@ -115,30 +121,15 @@ async def register_purchase(purchase_created: schemas.PurchaseCreate = Body(
             "user_id": 3,
             "book_name": "The Book Thief",
             "amount": 15,
-            "purchase_date": "2022-11-23"},
+            "purchase_date": 2022-11-23},
     ), db: Session = Depends(get_db),):
 
-    purchase = create_purchase(db, purchase_created)                        # RETURN : mostra que o registro funcionou
-    return {"task": "register successful", "purchase":purchase.purchase_id} # e mostra nome e id do livro
+    try:
+        purchase = create_purchase(db, purchase_created)   
+        return purchase  
+    except:
+        raise HTTPException(status_code=404, detail=f"book with name: {purchase_created.book_name} does not exists")
 
-# # Atualização de dados de um livro
-# @app.put("/api/v1/books/{book_id}")
-# async def update_book(book_id: UUID, book_update: BookRequest):
-#     for book in db:
-#         if book.id == book_id: # checa se o id está correto
-#             # Conferindo qual dado foi alterado
-#             if book_update.name:
-#                 book.name = book_update.name
-#             if book_update.genre:
-#                 book.genre = book_update.genre
-#             if book_update.author_name:
-#                 book.author_name = book_update.author_name
-#             if book_update.price:
-#                 book.price = book_update.price
-#             if book_update.amount:
-#                 book.amount = book_update.amount
-#             return book
-#     raise HTTPException(status_code=404, detail=f"book with id: {book_id} does not exists")
-
+    # RETURN : mostra que o registro funcionou
 
 Base.metadata.create_all(bind=engine)

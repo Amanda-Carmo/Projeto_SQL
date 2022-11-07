@@ -8,7 +8,6 @@ from sqlalchemy.types import String, Integer, Float, Date, Numeric, Enum, Text
 import models as schemas
 from sqlalchemy import desc
 from sqlalchemy.dialects.postgresql import UUID
-import uuid
 from schemas import Genre
 
 from database import Base
@@ -24,7 +23,7 @@ class Book(Base):
     book_name = Column(String(80), primary_key=True, nullable=False)
     genre = Column(String(36), nullable=False)
     author_name = Column(String(50))
-    price = Column(Numeric)
+    price = Column(Float)
     amount = Column(Integer, default=0)
 
     order = relationship("Order", back_populates="book")
@@ -35,7 +34,7 @@ class Order(Base):
     __tablename__ = "Order"
     user_id = Column(Integer, default=1, nullable=False) #usuário que pediu
 
-    order_id = Column(Integer, primary_key=True, default="a")
+    order_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     book_name = Column(String(length=80), ForeignKey("Book.book_name"), nullable=False)
     amount = Column(Integer, nullable=False)
     order_date = Column(Date, onupdate=_get_date)
