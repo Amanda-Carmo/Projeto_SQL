@@ -3,7 +3,7 @@ from enum import Enum
 import uuid
 from sqlmodel import Field
 import datetime
-from typing import Union
+from typing import Union, Optional, List
 
 # Gênero dos livros
 class Genre(str, Enum):
@@ -31,7 +31,12 @@ class BookCreate(BaseModel):
 
 # Para o update request: atributos que se pode atualizar. Não se pode mudar id.
 class BookUpdate(BaseModel):
+    book_name: Optional[str] = None
+    genre: Optional[Genre] = None
+    author_name: Optional[str] = None
     price: float
+    amount: Optional[int] = None
+
 
 class OrderCreate(BaseModel):
     user_id: int

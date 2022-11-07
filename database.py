@@ -1,5 +1,6 @@
 import os
 from dotenv import dotenv_values
+from secrets import credentials
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -14,7 +15,7 @@ env = dict(dotenv_values(".env"))
 # SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
 # SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
 # SQLALCHEMY_DATABASE_URL = os.getenv("DB_CONN")
-DB_CONNECTION_STRING = env.get("DB_CONNECTION_STRING")
+DB_CONNECTION_STRING = "mysql+pymysql://"+credentials['username']+":"+credentials['password']+"@localhost:3306/projetosql"
 
 # if not SQLALCHEMY_DATABASE_URL:
 #     raise Exception("Could not load environment variable 'SQLALCHEMY_DATABASE_URL'.")
