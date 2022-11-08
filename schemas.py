@@ -33,6 +33,7 @@ class BookCreate(BaseModel):
 class BookUpdate(BaseModel):
     price: float
 
+
 class OrderCreate(BaseModel):
     user_id: int
     book_name: str

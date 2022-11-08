@@ -42,6 +42,7 @@ def get_order(db: Session) -> list[schemas.Order]:
 def get_purchase(db: Session) -> list[schemas.Purchase]:
     return db.query(models.Purchase).all()
 
+
 # Criar order
 def create_order(db: Session, db_order: schemas.OrderCreate) -> schemas.OrderCreate:
     db_order = models.Order(**db_order.dict())
@@ -58,6 +59,7 @@ def create_purchase(db: Session, db_purchase: schemas.PurchaseCreate) -> schemas
     db.refresh(db_purchase)
     return db_purchase
 
+
 # Deletar Order
 def delete_order(db: Session, order_id: int) -> int:
     order = db.query(models.Order).filter(models.Order.order_id == order_id).first()
@@ -65,7 +67,7 @@ def delete_order(db: Session, order_id: int) -> int:
     db.delete(order)
     db.commit()    
     
-# Deletar Order
+# Deletar Purchase
 def delete_purchase(db: Session, purchase_id: int) -> int:
     purchase = db.query(models.Purchase).filter(models.Purchase.purchase_id == purchase_id).first()
     # if book is not None:
@@ -79,9 +81,6 @@ def update_amount_order(db: Session, book_name: str, db_book: schemas.Book, new_
     book = db.query(models.Book).filter(models.Book.book_name == book_name).first()
     if book is None:
         return None
-    
-    # for var, value in vars(db_book):
-    #     setattr(book, var, value) if value else None    
 
     if book.amount >= new_amount:
         book.amount = book.amount - new_amount
