@@ -16,11 +16,6 @@ import asyncio
 
 app = FastAPI()
 
-# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-# @app.get("/api/v1/books")
-# async def read_items(token: str = Depends(oauth2_scheme)):
-#     return {"token": token}
 
 @app.get("/")
 def read_root():
@@ -95,7 +90,7 @@ async def get_orders(db:Session = Depends(get_db)):
     orders = get_order(db)
     return orders
 
-# Deletando uma order
+# Deletando uma order (vai que ocorra algum erro buocrático...)
 @app.delete("/api/v1/orders/{order_id}")
 async def remove_order(order_id: int, db: Session = Depends(get_db)):
 
@@ -126,7 +121,6 @@ async def register_order(order_created: schemas.OrderCreate = Body(
         raise HTTPException(status_code=404, detail=f"book with name {order_created.book_name} does not exists")
                 
     
-
 # Tabela com informações de todas as entradas de livros para controle
 # GET
 @app.get("/api/v1/purchases")
@@ -158,7 +152,7 @@ async def register_purchase(purchase_created: schemas.PurchaseCreate = Body(
         raise HTTPException(status_code=404, detail=f"book with name {purchase_created.book_name} does not exists")
         
 
-# Deletando Purchase
+# Deletando Purchase (vai que ocorra algum erro burocrático)
 @app.delete("/api/v1/purchases/{purchase_id}")
 async def remove_purchase(purchase_id: int, db: Session = Depends(get_db)):
     try:
