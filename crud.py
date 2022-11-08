@@ -71,3 +71,37 @@ def delete_purchase(db: Session, purchase_id: int) -> int:
     # if book is not None:
     db.delete(purchase)
     db.commit() 
+
+
+# Atualiza amount ao vender
+def update_amount_order(db: Session, book_name: str, db_book: schemas.Book, new_amount: int):
+    # Get do livro
+    book = db.query(models.Book).filter(models.Book.book_name == book_name).first()
+    if book is None:
+        return None
+    
+    # for var, value in vars(db_book):
+    #     setattr(book, var, value) if value else None    
+
+    if book.amount >= new_amount:
+        book.amount = book.amount - new_amount
+        db.add(book)
+        db.commit()
+        db.refresh
+        return book
+    else:
+        return None
+
+# Atualiza amount ao comprar
+def update_amount_purchase(db: Session, book_name: str, db_book: schemas.Book, new_amount: int):
+    # Get do livro
+    book = db.query(models.Book).filter(models.Book.book_name == book_name).first()
+    if book is None:
+        return None 
+
+    book.amount = book.amount + new_amount
+    db.add(book)
+    db.commit()
+    db.refresh
+    return book
+

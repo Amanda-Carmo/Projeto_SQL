@@ -1,7 +1,7 @@
 from uuid import UUID
 from models import Book
 from typing import List
-from fastapi import FastAPI, HTTPException, Body, Depends
+from fastapi import FastAPI, HTTPException, Body, Depends, Header
 from fastapi.security import OAuth2PasswordBearer
 
 from sqlalchemy.orm.session import Session
@@ -71,8 +71,6 @@ async def remove_book(book_name: str, db: Session = Depends(get_db)):
     except:
         raise HTTPException(status_code=404, detail=f"book with name: {book_name} does not exists")
 
-    
-
 # Atualização do preço de um livro (pode ter uma promoção, por exemplo...)
 @app.put("/api/v1/books/{book_name}")
 async def update_books(book_name: str, book_updated: schemas.BookUpdate = Body(
@@ -103,7 +101,6 @@ async def remove_order(order_id: int, db: Session = Depends(get_db)):
 
     delete_order(db, order_id)
     return {"task": "delete successful"} # Mostra avisa que o delete teve sucesso
-    
    
 # Cria uma nova venda
 # Post
@@ -115,9 +112,20 @@ async def register_order(order_created: schemas.OrderCreate = Body(
             "amount": 15,
             "order_date": "2022-11-23"},
     ), db: Session = Depends(get_db)):
+     
+    db_book = models.Book
 
-    order = create_order(db, order_created)                        
-    return order
+    # Para checar se livro existe
+    book_exists = get_book_byname(db, order_created.book_name) is not None
+    if book_exists:
+        order = create_order(db, order_created) 
+        update_amount_order(db, order_created.book_name, db_book, order_created.amount) 
+        return order  
+    
+    else:
+        raise HTTPException(status_code=404, detail=f"book with name {order_created.book_name} does not exists")
+                
+    
 
 # Tabela com informações de todas as entradas de livros para controle
 # GET
@@ -135,10 +143,20 @@ async def register_purchase(purchase_created: schemas.PurchaseCreate = Body(
             "book_name": "The Book Thief",
             "amount": 15,
             "purchase_date": "2022-11-23"},
-    ), db: Session = Depends(get_db),):
+        ), db: Session = Depends(get_db),):
 
-        purchase = create_purchase(db, purchase_created)   
-        return purchase  
+        db_book = models.Book
+        
+        # Para checar se livro existe
+        book_exists = get_book_byname(db, purchase_created.book_name) is not None
+        if book_exists:    
+            purchase = create_purchase(db, purchase_created) 
+            update_amount_purchase(db, purchase_created.book_name, db_book, purchase_created.amount)
+
+            return purchase  
+        
+        raise HTTPException(status_code=404, detail=f"book with name {purchase_created.book_name} does not exists")
+        
 
 # Deletando Purchase
 @app.delete("/api/v1/purchases/{purchase_id}")
