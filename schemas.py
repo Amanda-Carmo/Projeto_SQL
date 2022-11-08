@@ -43,7 +43,7 @@ class OrderCreate(BaseModel):
 # Controle Venda
 class Order(BaseModel):
     id: int
-    user_id: int
+    user_id: int              # Meio de inserir qual o id de usuário responsável pela venda
     book_name: str
     amount: int
     order_date: datetime.date
@@ -58,7 +58,7 @@ class PurchaseCreate(BaseModel):
 # Controle Compra
 class Purchase(BaseModel):
     id: int
-    user_id: int
+    user_id: int             # Meio de inserir qual o id de usuário responsável pela compra
     book_name: str
     amount: int
     purchase_date: datetime.date
